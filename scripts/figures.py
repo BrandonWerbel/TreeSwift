@@ -12,6 +12,8 @@ if argv[1].lower().endswith('.gz'):
 else:
     data = load(open(argv[1]))
 
+print(data)
+
 # set up seaborn
 from matplotlib import rcParams
 from matplotlib.lines import Line2D
@@ -21,23 +23,16 @@ import seaborn as sns
 sns.set_context("paper", rc={"font.size":12,"axes.titlesize":16,"axes.labelsize":14,"legend.fontsize":10,"xtick.labelsize":10,"ytick.labelsize":10})
 sns.set_style("ticks")
 rcParams['font.family'] = 'serif'
-T = ['DendroPy','Bio.Phylo','ETE Toolkit','TreeSwift']
-name_to_key = {'DendroPy':'dendropy', 'Bio.Phylo':'biophylo', 'TreeSwift':'treeswift', 'ETE Toolkit':'ete3'}
-pal = {'TreeSwift':'black', 'Bio.Phylo':'red', 'DendroPy':'blue', 'ETE Toolkit':'green'}
-linestyle = {'TreeSwift':'-', 'DendroPy':':', 'Bio.Phylo':'--', 'ETE Toolkit':'-.'}
+T = ['DendroPy','Bio.Phylo','ETE Toolkit','TreeSwift', 'NetworkX']
+name_to_key = {'DendroPy':'dendropy', 'Bio.Phylo':'biophylo', 'TreeSwift':'treeswift', 'ETE Toolkit':'ete3', 'NetworkX' : 'networkx'}
+pal = {'TreeSwift':'black', 'Bio.Phylo':'red', 'DendroPy':'blue', 'ETE Toolkit':'green', 'NetworkX' : 'purple'}
+linestyle = {'TreeSwift':'-', 'DendroPy':':', 'Bio.Phylo':'--', 'ETE Toolkit':'-.', 'NetworkX':'solid'}
 meta = {
     'name': {
-        'distance_matrix': "Distance Matrix",
-        'inorder': "In-Order Traversal",
-        'ladderize': "Ladderize",
-        'levelorder': "Level-Order Traversal",
-        'load_tree': "Load Tree",
-        'memory': "Memory Usage",
-        'mrca': "Most Recent Common Ancestor",
-        'postorder': "Post-Order Traversal",
-        'preorder': "Pre-Order Traversal",
-        'rootdistorder': "Root-Distance-Order Traversal",
-        'total_branch_length': "Total Length"
+        'height': "Height",
+        'average_length': "Average Length",
+        'distance': "Distance",
+        'treeness': "Treeness",
     }
 }
 N = None
@@ -68,11 +63,7 @@ for m in sorted(data.keys()):
     plt.yscale('log')
     plt.title(meta['name'][m])
     plt.xlabel("Number of Leaves")
-    if m == 'memory':
-        plt.ylabel("Memory Usage (MB)")
-    else:
-        plt.ylabel("Execution Time (seconds)")
+    plt.ylabel("Execution Time (seconds)")
     handles = [Line2D([0],[0],color=pal[t],label=t,linestyle=linestyle[t],linewidth=1.5) for t in used]
     legend = plt.legend(handles=handles,bbox_to_anchor=(0.005, 0.995), loc=2, borderaxespad=0., frameon=True)
-    plt.show()
     fig.savefig('%s.pdf'%m.lower(), format='pdf', bbox_inches='tight')
