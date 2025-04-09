@@ -7,6 +7,7 @@ import ete3
 import numpy
 import networkx
 from statistics import mean
+import random
 NA = "NA" # what to print when function is not implemented
 #test
 # main code
@@ -130,16 +131,17 @@ def distance(m):  # Alexis - this is complete I beilieve let me know if there ar
     if m == 'dendropy':
         tree = dendropy.Tree.get(data=treestr, schema='newick')
         root = tree.seed_node
-        farthest = max(tree.nodes(), key=lambda n: n.distance(root))
-        node1, node2 = root, farthest
+        random_node = random.choice(tree.nodes())
+        node1, node2 = root, random_node        
         t_start = time()
         tree.PhylogeneticDistanceMatrix.distance(node1, node2)
         t_end = time()
     elif m == 'biophylo':
         tree = Phylo.read(treeio, 'newick')
         root = tree.root
-        farthest = max(tree.get_terminals(), key=lambda n: tree.distance(root, n))
-        node1, node2 = root, farthest
+        all_nodes = list(tree.get_terminals()) + list(tree.get_nonterimnals())
+        random_node = random.choice(all_nodes)
+        node1, node2 = root, random_node
         t_start = time()
         tree.distance(node1, node2)
         t_end = time()
@@ -147,30 +149,34 @@ def distance(m):  # Alexis - this is complete I beilieve let me know if there ar
         tree = Phylo.read(treeio, 'newick')
         G = Phylo.to_networkx(tree)
         root = tree.root
-        farthest = max(G.nodes(), key=lambda n: networkx.shortest_path_length(G, source=root, target=n))
-        node1, node2 = root, farthest
+        all_nodes = list(G.nodes())
+        random_node = random.choice(nodes)
+        node1, node2 = root, random_node
         t_start = time()
         networkx.shortest_path_length(G, source=node1, target=node2)
         t_end = time()
     elif m == 'treeswift':
         tree = read_tree_newick(treestr)
         root = tree.root
-        farthest = max(tree.leaves(), key=lambda n: tree.distance(n, root))
-        node1, node2 = root, farthest
+        all_nodes = list(tree.get_nodes())
+        random_node = random.choice(all_nodes)
+        node1, node2 = root, random_node
         t_start = time()
         tree.distance_between(node1, node2)
         t_end = time()
     elif m == 'ete3':
         tree = ete3.Tree(treestr, format=1)
         root = tree.get_tre_root()
-        farthest = max(tree.get_leaves(), key=lambda n: root.get_distance(n))
-        node1, node2 = root, farthest
+        all_nodes = tree.get_descendants()
+        random_node = random.choice(all_nodes)
+        node1, node2 = root, random_node
         t_start = time()
         node1.get_distance(node2)
         t_end = time()
     else:
         assert False, "Invalid tool: %s" % m
     return t_end - t_start
+
 
 
 TASKS = {
