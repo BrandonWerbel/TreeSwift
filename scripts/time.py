@@ -8,7 +8,7 @@ import numpy
 import networkx
 from statistics import mean
 NA = "NA" # what to print when function is not implemented
-
+#test
 # main code
 from io import StringIO
 from sys import argv
