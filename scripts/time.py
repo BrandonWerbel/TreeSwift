@@ -26,28 +26,28 @@ def avg_tree_length(m):
     if m == 'dendropy':
         tree = dendropy.Tree.get(data=treestr, schema='newick')
         t_start = time()
-        tree.max_distance_from_root()
+        numpy.average([0 if edge.length is None else edge.length for edge in tree.postorder_edge_iter()])
         t_end = time()
     elif m == 'biophylo':
         tree = Phylo.read(treeio, 'newick')
         t_start = time()
-        max(tree.depths().values())
+        numpy.average(branch_lengths = [clade.branch_length for clade in tree.find_clades() if clade.branch_length])
         t_end = time()
     elif m == 'networkx':
         tree = Phylo.read(treeio, 'newick')
         G = Phylo.to_networkx(tree)
         t_start = time()
-        max(networkx.shortest_path_length(G, source=tree.root).values())
+        numpy.average(branch_lengths = [data["weight"] for _, _, data in tree.edges(data=True)])
         t_end = time()
     elif m == 'treeswift':
         tree = read_tree_newick(treestr)
         t_start = time()
-        tree.height()
+        tree.avg_branch_length(terminal=True, internal=True)
         t_end = time()
     elif m == 'ete3':
         tree = ete3.Tree(treestr,format=1)
         t_start = time()
-        max(tree.get_distance(leaf) for leaf in tree.iter_leaves())
+        numpy.average([node.dist for node in tree.traverse()])
         t_end = time()
     else:
         assert False, "Invalid tool: %s"%m
