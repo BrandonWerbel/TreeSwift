@@ -88,28 +88,39 @@ def treeness(m):
     if m == 'dendropy':
         tree = dendropy.Tree.get(data=treestr, schema='newick')
         t_start = time()
-        
+        total = sum(edge.length for edge in tree.edges() if edge.length is not None)
+        internal = sum(edge.length for edge in tree.internal_edges() if edge.length is not None)
+        treeness_val = internal / total if total else 0
         t_end = time()
     elif m == 'biophylo':
         tree = Phylo.read(treeio, 'newick')
         t_start = time()
-        
+        total = sum(clade.branch_length for clade in tree.find_clades() if clade.branch_length)
+        internal = sum(clade.branch_length for clade in tree.get_nonterminals() if clade.branch_length)
+        treeness_val = internal / total if total else 0
         t_end = time()
     elif m == 'networkx':
         tree = Phylo.read(treeio, 'newick')
         G = Phylo.to_networkx(tree)
         t_start = time()
-        
+        total = sum(G[u][v].get('weight', 1.0) for u, v in G.edges())
+        leaves = {n for n in G if G.degree[n] == 1 and n != tree.root}
+        internal = sum(G[u][v].get('weight', 1.0) for u, v in G.edges() if u not in leaves and v not in leaves)
+        treeness_val = internal / total if total else 0
         t_end = time()
     elif m == 'treeswift':
         tree = read_tree_newick(treestr)
         t_start = time()
-        
+        total = sum(n.edge_length for n in tree.traverse_preorder() if n.edge_length is not None)
+        internal = sum(n.edge_length for n in tree.traverse_internal() if n.edge_length is not None)
+        treeness_val = internal / total if total else 0
         t_end = time()
     elif m == 'ete3':
         tree = ete3.Tree(treestr,format=1)
         t_start = time()
-        
+        total = sum(n.dist for n in tree.traverse())
+        internal = sum(n.dist for n in tree.traverse() if not n.is_leaf())
+        treeness_val = internal / total if total else 0
         t_end = time()
     else:
         assert False, "Invalid tool: %s"%m
