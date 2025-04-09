@@ -57,7 +57,7 @@ def tree_height(m):
     if m == 'dendropy':
         tree = dendropy.Tree.get(data=treestr, schema='newick')
         t_start = time()
-        tree.mean((edge.length if edge.length is not None else 0) for edge in tree.postorder_edge_iter())
+        tree.max_distance_from_root()
         t_end = time()
     elif m == 'biophylo':
         tree = Phylo.read(treeio, 'newick')
