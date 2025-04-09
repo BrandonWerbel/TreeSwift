@@ -34,7 +34,7 @@ for task in NUM_LEAVES:
                 continue # skip this tool if X > max num leaves we want to run
             data[task][X][tool] = list()
             print(" %s" % tool, end='')
-            command = ['python3', 'TreeSwift-Paper/scripts/time.py', 'TreeSwift-Paper/data/tree_n%d.tre.gz' % X, tool, task]
+            command = ['python3', 'TreeSwift/scripts/time.py', 'TreeSwift/data/tree_n%d.tre.gz' % X, tool, task]
             for replicate in range(1, NUM_REPS + 1):
                 print('.', end='')
                 print(command)
