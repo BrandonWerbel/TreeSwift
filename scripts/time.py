@@ -115,11 +115,11 @@ def treeness(m):
         assert False, "Invalid tool: %s"%m
     return t_end-t_start
 
-def distance(m): #Alexis - this is complete I beilieve let me know if there are any issues
+def distance(m):  # Alexis - this is complete I beilieve let me know if there are any issues
     if m == 'dendropy':
         tree = dendropy.Tree.get(data=treestr, schema='newick')
         root = tree.seed_node
-        farthest = max(tree.nodes(), key=lambda n: tree.distance(n, root))
+        farthest = max(tree.nodes(), key=lambda n: n.distance(root))
         node1, node2 = root, farthest
         t_start = time()
         tree.PhylogeneticDistanceMatrix.distance(node1, node2)
@@ -136,10 +136,10 @@ def distance(m): #Alexis - this is complete I beilieve let me know if there are 
         tree = Phylo.read(treeio, 'newick')
         G = Phylo.to_networkx(tree)
         root = tree.root
-        farthest = max(G.nodes(), key=lambda n: nx.shortest_path_length(G, source=root, target=n))
+        farthest = max(G.nodes(), key=lambda n: networkx.shortest_path_length(G, source=root, target=n))
         node1, node2 = root, farthest
         t_start = time()
-        nx.shortest_path_length(G, source=node1, target=node2)
+        networkx.shortest_path_length(G, source=node1, target=node2)
         t_end = time()
     elif m == 'treeswift':
         tree = read_tree_newick(treestr)
@@ -150,16 +150,17 @@ def distance(m): #Alexis - this is complete I beilieve let me know if there are 
         tree.distance_between(node1, node2)
         t_end = time()
     elif m == 'ete3':
-        tree = ete3.Tree(treestr,format=1)
+        tree = ete3.Tree(treestr, format=1)
         root = tree.get_tre_root()
         farthest = max(tree.get_leaves(), key=lambda n: root.get_distance(n))
-        node1, node2 = root, farthest_node
+        node1, node2 = root, farthest
         t_start = time()
         node1.get_distance(node2)
         t_end = time()
     else:
-        assert False, "Invalid tool: %s"%m
-    return t_end-t_start
+        assert False, "Invalid tool: %s" % m
+    return t_end - t_start
+
 
 TASKS = {
     'height':tree_height,
