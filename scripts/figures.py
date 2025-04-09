@@ -12,8 +12,6 @@ if argv[1].lower().endswith('.gz'):
 else:
     data = load(open(argv[1]))
 
-print(data)
-
 # set up seaborn
 from matplotlib import rcParams
 from matplotlib.lines import Line2D
