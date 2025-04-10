@@ -17,6 +17,9 @@ NUM_LEAVES = {
 MAX_NUM_LEAVES = {
     'height': {
         'ete3' : 1000
+    },
+    'distance': {
+        'dendropy' : 1000
     }
 }
 

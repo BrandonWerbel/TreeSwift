@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+import collections; from collections.abc import MutableMapping; collections.MutableMapping = MutableMapping
 from Bio import Phylo
 from itertools import combinations
 from treeswift import read_tree_newick
